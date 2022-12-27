@@ -18,14 +18,14 @@ export class EncryptionService {
   }
 
   decryptionAES(msg) {
-    console.log(msg);
+    //console.log(msg);
     // Decrypt
     msg = msg.replaceAll('.', '+').replaceAll('-', '/').replaceAll('~', '=');
 
-    console.log(msg);
+    //console.log(msg);
 
-    //msg = CryptoJS.enc.Base64.parse(msg);
-    var data = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(msg));
+    //var data = CryptoJS.enc.Base64.parse(msg);
+    //var data = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(msg));
 
     //msg = CryptoJS.enc.Utf8.parse(msg);
 
@@ -33,7 +33,7 @@ export class EncryptionService {
 
     let vectorBytes = CryptoJS.enc.Utf8.parse(this.vector);
 
-    console.log(vectorBytes);
+    //console.log(vectorBytes);
 
     //const derp = require('derive-password-bytes');
 
@@ -42,24 +42,31 @@ export class EncryptionService {
     //const keyWords = CryptoJS.enc.Utf8.parse(keyBytes);
 
     // well known algorithm to generate key
-    var keyWords = CryptoJS.PBKDF2(this.key, this.salt, {
-      keySize: 32,
+    let _key = CryptoJS.enc.Utf8.parse(this.key);
+    let _salt = CryptoJS.enc.Utf8.parse(this.salt);
+
+    var keyWords = CryptoJS.PBKDF2(this.key, _salt, {
+      keySize: 256 / 32,
       iterations: 2,
-      hasher: CryptoJS.algo.SHA1,
     });
 
-    const bytes = CryptoJS.AES.decrypt({ ciphertext: data }, keyWords, {
-      iv: vectorBytes,
-      padding: CryptoJS.pad.Pkcs7,
-      mode: CryptoJS.mode.CBC,
-      //keySize: 256,
-      //blockSize: 128,
-    });
+    const decryptedWordArray = CryptoJS.AES.decrypt(
+      //{ ciphertext: data },
+      msg,
+      keyWords,
+      {
+        iv: vectorBytes,
+        //padding: CryptoJS.pad.Pkcs7,
+        //mode: CryptoJS.mode.CBC,
+        //keySize: 256,
+        //blockSize: 128,
+      }
+    );
 
-    const plaintext = bytes.toString(CryptoJS.enc.Uft8);
+    const plaintext = decryptedWordArray.toString(CryptoJS.enc.Utf8); //CryptoJS.enc.Utf16LE.stringify(decryptedWordArray);
 
-    console.log(plaintext);
+    //console.log(plaintext);
 
-    return plaintext;
+    return JSON.parse(plaintext);
   }
 }
