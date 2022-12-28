@@ -21,7 +21,7 @@ export class EncryptionService {
   decryptionAES(msg) {
     //console.log(msg);
     // Decrypt
-    //msg = msg.replaceAll('.', '+').replaceAll('-', '/').replaceAll('~', '=');
+    msg = msg.replaceAll('.', '+').replaceAll('-', '/').replaceAll('~', '=');
 
     //console.log(msg);
 
@@ -83,18 +83,17 @@ export class EncryptionService {
     //}
     //);
 
-    let _key = CryptoJS.enc.Utf8.parse(this.key);
+    // let _key = CryptoJS.enc.Utf8.parse(this.key);
     let _salt = CryptoJS.enc.Utf8.parse(this.salt);
 
     var keyWords = CryptoJS.PBKDF2(this.key, _salt, {
-      keySize: 256/32,
+      keySize: 256 / 32,
       iterations: 2,
     });
 
     console.log(keyWords);
 
-
-    var key = CryptoJS.enc.Utf8.parse(this.key); // Convert into WordArray (using Utf8)
+    // var key = CryptoJS.enc.Utf8.parse(this.key); // Convert into WordArray (using Utf8)
     var iv = CryptoJS.enc.Utf8.parse(this.vector);
     //CryptoJS.lib.WordArray.create([0x00, 0x00, 0x00, 0x00]); // Use zero vector as IV
     var decrypted = CryptoJS.AES.decrypt(msg, keyWords, { iv: iv }); // By default: CBC, PKCS7
