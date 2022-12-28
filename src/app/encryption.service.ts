@@ -86,10 +86,12 @@ export class EncryptionService {
     let _key = CryptoJS.enc.Utf8.parse(this.key);
     let _salt = CryptoJS.enc.Utf8.parse(this.salt);
 
-    var keyWords = CryptoJS.PBKDF2(_key, _salt, {
-      keySize: 256 / 8,
+    var keyWords = CryptoJS.PBKDF2(this.key, _salt, {
+      keySize: 256/32,
       iterations: 2,
     });
+
+    console.log(keyWords);
 
 
     var key = CryptoJS.enc.Utf8.parse(this.key); // Convert into WordArray (using Utf8)
